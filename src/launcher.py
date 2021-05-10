@@ -1,11 +1,3 @@
-from sqlalchemy import *
-
-import models.users
-import models.time_records
-import models.channels
-
-import setting
-
 from bot import MyBot
 
 

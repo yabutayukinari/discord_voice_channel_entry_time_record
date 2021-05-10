@@ -65,7 +65,7 @@ class MyBot(commands.AutoShardedBot):
             super().run(config.token, reconnect=True)
         finally:
             # TODO: ログの記載方法ライブラリ使用に変更。
-            with open('prev_events.log', 'w', encoding='utf-8') as fp:
+            with open('../prev_events.log', 'w', encoding='utf-8') as fp:
                 for data in self._prev_events:
                     try:
                         x = json.dumps(data, ensure_ascii=True, indent=4)
@@ -76,4 +76,4 @@ class MyBot(commands.AutoShardedBot):
 
     @property
     def config(self):
-        return __import__('config')
+        return __import__('settings')

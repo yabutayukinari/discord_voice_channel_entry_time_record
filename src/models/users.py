@@ -1,16 +1,15 @@
-from setting import *
-
+from src.settings.setting import *
 from sqlalchemy import *
 
-
-class Channels(Base):
+class Users(Base):
     """
     users テーブル定義
     """
     id = Column(Integer, primary_key=True)
-    discord_channel_id = Column(Integer, nullable=False)
+    discord_user_id = Column(Integer, nullable=False)
+    # タイムゾーンの生成
     created_at = Column(DATETIME, nullable=False)
-    __tablename__ = 'channels'
+    __tablename__ = 'users'
 
 
 # 各modelに記載。共通化できるか調査中

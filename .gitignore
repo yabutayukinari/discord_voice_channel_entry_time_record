@@ -1,7 +1,7 @@
 .idea
 
 venv/*
-config.py
+src/config.py
 
 mybot.sqlite3
-*.log
+src/logs/*

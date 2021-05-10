@@ -1,6 +1,11 @@
 # Discord Voice Channel Entry Time Recording
 ボイスチャンネルの入室時間を計測します。
 
+## 特徴
+- ボイスチャンネルの入室から退室までの時間を計測できます。
+- 時間計測の有無をコマンドで管理できます。
+- 複数サーバーには未対応
+
 ## 環境構築
 1. Make sure to get Python 3.9 or higher  
 This is required to actually run the bot.

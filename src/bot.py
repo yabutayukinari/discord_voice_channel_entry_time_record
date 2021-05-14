@@ -6,6 +6,7 @@ from collections import deque
 import config
 import discord
 from discord.ext import commands
+from loguru import logger
 
 description = """
 
@@ -64,15 +65,14 @@ class MyBot(commands.AutoShardedBot):
         try:
             super().run(config.token, reconnect=True)
         finally:
-            # TODO: ログの記載方法ライブラリ使用に変更。
-            with open('../prev_events.log', 'w', encoding='utf-8') as fp:
-                for data in self._prev_events:
-                    try:
-                        x = json.dumps(data, ensure_ascii=True, indent=4)
-                    except Exception as e:
-                        fp.write(f'{data}\n')
-                    else:
-                        fp.write(f'{x}\n')
+            for data in self._prev_events:
+                try:
+                    x = json.dumps(data, ensure_ascii=True, indent=4)
+                except Exception as e:
+                    logger.error(f'{data}')
+                else:
+                    logger.error(f'{x}')
+
 
     @property
     def config(self):

@@ -2,17 +2,17 @@ from src.settings.setting import *
 from sqlalchemy import *
 
 
-class VoiceStateRecord(Base):
+class VoiceStateRecords(Base):
     """
-    time_record テーブル定義
+    voice_state_records テーブル定義
     """
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, nullable=False)
-    channel_id = Column(Integer, nullable=False)
-    # 1: 入室 2: 退出 3: その他
+    member_id = Column(Integer, nullable=False)
+    voice_channel_id = Column(Integer, nullable=False)
+    # 1: 入室 2: 退出
     status = Column(Integer, nullable=False)
     created_at = Column(DATETIME, nullable=False)
-    __tablename__ = 'voice_state_record'
+    __tablename__ = 'voice_state_records'
 
 
 # 各modelに記載。共通化できるか調査中

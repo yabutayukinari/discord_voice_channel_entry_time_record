@@ -2,3 +2,4 @@ discord.py
 sqlalchemy
 loguru
 pytz
+sqlalchemy-views

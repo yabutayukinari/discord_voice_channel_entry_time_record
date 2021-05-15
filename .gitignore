@@ -4,4 +4,4 @@ venv/*
 src/config.py
 
 mybot.sqlite3
-src/logs/*
+logs/*

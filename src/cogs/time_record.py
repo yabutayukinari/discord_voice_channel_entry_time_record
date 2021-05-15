@@ -77,7 +77,10 @@ class TimeRecord(commands.Cog):
         # TODO: 未登録メンバーの通知チャンネルの考慮が必要
         if member is None:
             logger.error(
-                f'discord_member_id:{discord_member_id} DB未登録ユーザーの操作です。')
+                f'不明なメンバーの入室を確認 '
+                f'discord_member_id:{discord_member_id} '
+                f'discord_channel_id:{discord_channel.id} '
+            )
             return
 
         # TODO: timesがない場合を考慮が必要
@@ -85,6 +88,11 @@ class TimeRecord(commands.Cog):
 
         # メンバーが記録なしの場合
         if member.is_record is False:
+            logger.info(
+                f'記録不要メンバー '
+                f'discord_member_id:{discord_member_id} '
+                f'discord_channel_id:{discord_channel.id} '
+            )
             await self.send_message(
                 times_channel_discord_id,
                 discord_channel.name,
@@ -99,7 +107,10 @@ class TimeRecord(commands.Cog):
         # 未登録ボイスチャンネルの場合
         if voice_channel is None:
             logger.info(
-                f'discord_member_id:{discord_member_id} discord_channel_id:{discord_channel.id} 入室')
+                f'未登録ボイスチャンネル '
+                f'discord_member_id:{discord_member_id} '
+                f'discord_channel_id:{discord_channel.id} '
+                )
             await self.send_message(
                 times_channel_discord_id,
                 discord_channel.name,
@@ -112,7 +123,10 @@ class TimeRecord(commands.Cog):
         # ボイスチャンネルが記録無の場合
         if voice_channel.is_record is False:
             logger.info(
-                f'discord_member_id:{discord_member_id} discord_channel_id:{discord_channel.id}')
+                f'記録不要チャンネル '
+                f'discord_member_id:{discord_member_id} '
+                f'discord_channel_id:{discord_channel.id} '
+                )
             await self.send_message(
                 times_channel_discord_id,
                 discord_channel.name,
@@ -122,7 +136,14 @@ class TimeRecord(commands.Cog):
             )
             return
 
-        self.voice_state_record_service.save(member.id, voice_channel.id, status, now)
+        result = self.voice_state_record_service.save(member.id, voice_channel.id, status, now)
+        logger.info(
+            f'記録チャンネル '
+            f'member.id:{member.id} '
+            f'voice_channel.id:{voice_channel.id} '
+            f'status:{status} '
+            f'created_at:{now} '
+        )
         # メッセージ送信
         await self.send_message(
             times_channel_discord_id,
@@ -149,7 +170,7 @@ class TimeRecord(commands.Cog):
         embed.add_field(name="記録種別", value=is_record_value, inline=False)
 
         embed.add_field(name='チャンネル名', value=channel_name, inline=False)
-        embed.add_field(name="開始時間", value=f"{now.strftime('%Y/%m/%d %H:%M:%S')}", inline=False)
+        embed.add_field(name="現在時刻", value=f"{now.strftime('%Y/%m/%d %H:%M:%S')}", inline=False)
 
         await send_channel.send(embed=embed)
 

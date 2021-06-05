@@ -1,12 +1,12 @@
 import discord
 
-from src import config
+import config
 from discord.ext import commands
-from src.services.voice_state_record_service import *
-from src.services.voice_channel_service import *
-from src.services.time_record_service import *
-from src.services.member_service import *
-from src.services.times_channel_service import *
+from services.voice_state_record_service import *
+from services.voice_channel_service import *
+from services.time_record_service import *
+from services.member_service import *
+from services.times_channel_service import *
 from datetime import datetime, timedelta, timezone
 
 TOKEN = config.token
@@ -42,14 +42,25 @@ class TimeRecord(commands.Cog):
 
         # 現在日時
         now = datetime.now(self.JST)
+
         # ボイスチャンネル入室
         if before.channel is None and after.channel is not None:
-            await self.save_voice_state_record(member.id, after.channel, self.TIME_RECORD_STATUS_IN, now)
+            await self.save_voice_state_record(
+                member.id,
+                after.channel.id,
+                after.channel.name,
+                self.TIME_RECORD_STATUS_IN,
+                now)
             return
 
         # ボイスチャンネル退室
         if before.channel is not None and after.channel is None:
-            await self.save_voice_state_record(member.id, before.channel, self.TIME_RECORD_STATUS_OUT, now)
+            await self.save_voice_state_record(
+                member.id,
+                before.channel.id,
+                before.channel.name,
+                self.TIME_RECORD_STATUS_OUT,
+                now)
             return
 
         # チャンネル内アクション (ミュートなど)
@@ -60,15 +71,30 @@ class TimeRecord(commands.Cog):
 
         # チャンネル移動
         if before.channel.id != after.channel.id:
-            await self.save_voice_state_record(member.id, before.channel, self.TIME_RECORD_STATUS_OUT, now)
-            await self.save_voice_state_record(member.id, after.channel, self.TIME_RECORD_STATUS_IN, now)
+            # 退室
+            await self.save_voice_state_record(
+                member.id,
+                before.channel.id,
+                before.channel.name,
+                self.TIME_RECORD_STATUS_OUT,
+                now
+            )
+
+            # 入室
+            await self.save_voice_state_record(
+                member.id,
+                after.channel.id,
+                after.channel.name,
+                self.TIME_RECORD_STATUS_IN,
+                now)
             return
 
-    async def save_voice_state_record(self, discord_member_id, discord_channel, status, now):
+    async def save_voice_state_record(self, discord_member_id, discord_channel_id, discord_channel_name, status, now):
         """
         入退室
         :param discord_member_id:
-        :param discord_channel:
+        :param discord_channel_id:
+        :param discord_channel_name:
         :param status:
         :param now:
         :return:
@@ -79,7 +105,7 @@ class TimeRecord(commands.Cog):
             logger.error(
                 f'不明なメンバーの入室を確認 '
                 f'discord_member_id:{discord_member_id} '
-                f'discord_channel_id:{discord_channel.id} '
+                f'discord_channel_id:{discord_channel_id} '
             )
             return
 
@@ -91,29 +117,29 @@ class TimeRecord(commands.Cog):
             logger.info(
                 f'記録不要メンバー '
                 f'discord_member_id:{discord_member_id} '
-                f'discord_channel_id:{discord_channel.id} '
+                f'discord_channel_id:{discord_channel_id} '
             )
             await self.send_message(
                 times_channel_discord_id,
-                discord_channel.name,
+                discord_channel_name,
                 status,
                 self.RECORD_OFF,
                 now
             )
             return
 
-        voice_channel = self.find_voice_channel_by_discord_id(discord_channel.id)
+        voice_channel = self.find_voice_channel_by_discord_id(discord_channel_id)
 
         # 未登録ボイスチャンネルの場合
         if voice_channel is None:
             logger.info(
                 f'未登録ボイスチャンネル '
                 f'discord_member_id:{discord_member_id} '
-                f'discord_channel_id:{discord_channel.id} '
+                f'discord_channel_id:{discord_channel_id} '
                 )
             await self.send_message(
                 times_channel_discord_id,
-                discord_channel.name,
+                discord_channel_name,
                 status,
                 self.RECORD_OFF,
                 now
@@ -125,11 +151,11 @@ class TimeRecord(commands.Cog):
             logger.info(
                 f'記録不要チャンネル '
                 f'discord_member_id:{discord_member_id} '
-                f'discord_channel_id:{discord_channel.id} '
+                f'discord_channel_id:{discord_channel_id} '
                 )
             await self.send_message(
                 times_channel_discord_id,
-                discord_channel.name,
+                discord_channel_name,
                 status,
                 self.RECORD_OFF,
                 now
@@ -147,7 +173,7 @@ class TimeRecord(commands.Cog):
         # メッセージ送信
         await self.send_message(
             times_channel_discord_id,
-            discord_channel.name,
+            discord_channel_name,
             status,
             self.RECORD_ON,
             now

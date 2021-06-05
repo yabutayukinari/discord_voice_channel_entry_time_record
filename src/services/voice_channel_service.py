@@ -1,5 +1,5 @@
-from src.models.voice_channels import *
-from src.settings.setting import session
+from models.voice_channels import *
+from settings.setting import session
 
 
 class VoiceChannelService:

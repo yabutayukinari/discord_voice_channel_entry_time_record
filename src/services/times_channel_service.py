@@ -1,6 +1,6 @@
-from src.models.times_channels import *
-from src.models.text_channels import *
-from src.settings.setting import session
+from models.times_channels import *
+from models.text_channels import *
+from settings.setting import session
 
 
 class TimesChannelService:

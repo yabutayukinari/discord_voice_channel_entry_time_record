@@ -1,5 +1,5 @@
-from src.models.time_records import *
-from src.settings.setting import session
+from models.time_records import *
+from settings.setting import session
 
 
 class TimeRecordService:

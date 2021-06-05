@@ -1,5 +1,5 @@
-from src.models.voice_state_records import *
-from src.settings.setting import session
+from models.voice_state_records import *
+from settings.setting import session
 
 
 class VoiceStateRecordService:

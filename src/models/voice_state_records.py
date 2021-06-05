@@ -1,4 +1,4 @@
-from src.settings.setting import *
+from settings.setting import *
 from sqlalchemy import *
 
 

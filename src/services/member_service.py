@@ -1,5 +1,5 @@
-from src.models.members import *
-from src.settings.setting import session
+from models.members import *
+from settings.setting import session
 
 
 class MemberService:

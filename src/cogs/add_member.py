@@ -21,6 +21,12 @@ class AddMember(commands.Cog):
         :param args:
         :return:
         """
+        if len(args) > 0:
+            logger.info('メンバー登録 失敗：引数指定')
+            embed = discord.Embed(title="メンバー登録", description="コマンドエラー。引数は指定できません。", color=0xc0392b)
+            await ctx.send(embed=embed)
+            return
+
         # 現在日時
         now = datetime.now(self.JST)
         # TODO: コマンド利用権限チェック roleで制御 自分意外を追加する場合はチェックが欲しい
@@ -28,6 +34,7 @@ class AddMember(commands.Cog):
         member = self.member_service.find_by_discord_id(discord_member_id)
 
         if member:
+            logger.info('メンバー登録 失敗： 登録済み')
             embed = discord.Embed(title="メンバー登録", description="すでに登録されています。", color=0xc0392b)
             embed.add_field(name='メンバー名', value=ctx.author.display_name, inline=False)
             embed.add_field(name='登録日', value=member.created_at, inline=False)
@@ -38,7 +45,7 @@ class AddMember(commands.Cog):
 
         embed = discord.Embed(title="メンバー登録", description="登録完了しました。", color=0x27ae60)
         embed.add_field(name='メンバー名', value=ctx.author.display_name, inline=False)
-
+        logger.info('メンバー登録 成功： 登録完了')
         await ctx.send(embed=embed)
 
     def save_member(self, discord_member_id, created_at):

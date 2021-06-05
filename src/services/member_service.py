@@ -9,3 +9,11 @@ class MemberService:
             .filter(
             Members.discord_id == discord_id) \
             .first()
+
+    def save(self, discord_id, created_at):
+        members = Members()
+        members.discord_id = discord_id
+        members.created_at = created_at
+        session.add(members)
+        session.commit()
+        return members

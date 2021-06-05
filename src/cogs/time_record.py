@@ -1,13 +1,14 @@
+from datetime import datetime, timedelta, timezone
+
 import discord
+from discord.ext import commands
 
 import config
-from discord.ext import commands
-from services.voice_state_record_service import *
-from services.voice_channel_service import *
-from services.time_record_service import *
 from services.member_service import *
+from services.time_record_service import *
 from services.times_channel_service import *
-from datetime import datetime, timedelta, timezone
+from services.voice_channel_service import *
+from services.voice_state_record_service import *
 
 TOKEN = config.token
 

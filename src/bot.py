@@ -3,10 +3,11 @@ import sys
 import traceback
 from collections import deque
 
-import config
 import discord
 from discord.ext import commands
 from loguru import logger
+
+import config
 
 description = """
 
@@ -15,6 +16,7 @@ discord_voice_channel_entry_time_record BOT
 
 initial_extensions = (
     'cogs.time_record',
+    'cogs.add_member',
 )
 
 
@@ -28,11 +30,8 @@ def _prefix_callable(bot, msg):
     user_id = bot.user.id
 
     base = [f'<@!{user_id}> ', f'<@{user_id}> ']
-    if msg.guild is None:
-        base.append('!')
-        base.append('?')
-    else:
-        base.append('¥')
+    base.append('!')
+
     return base
 
 

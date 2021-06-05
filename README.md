@@ -10,17 +10,24 @@
 1. Make sure to get Python 3.9 or higher  
 This is required to actually run the bot.
 
+
 1. Set up venv  
-   Just do `python3.9 -m venv venv`
+   Just do `python3.9 -m venv venv`  
    PyCharmの場合、環境構築が容易なのでそちらをつかうことをおすすめします。   
+
 
 1. Install dependencies  
 `pip install -U -r requirements.txt`
    
 1. Setup configuration
+
+`$ vim src/config.py`
+
 ```
 client_id   = '' # your bot's client ID
 token = '' # your bot's token
 ```
-1. Start
-`python launcher.py`
+
+
+1. Start  
+`python src/launcher.py`

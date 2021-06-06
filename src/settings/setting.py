@@ -28,7 +28,7 @@ logger.add("logs/log_{time:YYYY-MM-DDTHH:mm}.log", rotation="1 day", retention=3
 insp = inspect(engine)
 if not insp.has_table("members_date_total_enter_seconds"):
     view = Table('members_date_total_enter_seconds', MetaData())
-    definition = text("select member_id, date, sum(channel_enter_seconds) from time_records group by member_id, date")
+    definition = text("select member_id, date, sum(channel_enter_seconds) as second from time_records group by member_id, date")
     create_view = CreateView(view, definition)
     print(str(create_view.compile()).strip())
     engine.execute(create_view)

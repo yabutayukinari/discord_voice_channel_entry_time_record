@@ -4,11 +4,12 @@ from settings.setting import session
 
 class VoiceStateRecordService:
 
-    def find_last_record(self, member_id, voice_channel_id):
+    def find_start_voice_state_record(self, member_id, voice_channel_id, end_id):
         return session.query(VoiceStateRecords).\
         filter(
             VoiceStateRecords.member_id == member_id,
             VoiceStateRecords.voice_channel_id == voice_channel_id,
+            VoiceStateRecords.id < end_id
         ).order_by(desc(VoiceStateRecords.created_at)).first()
 
     def save(self, member_id, voice_channel_id, status, created_at):

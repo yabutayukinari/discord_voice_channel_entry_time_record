@@ -179,6 +179,50 @@ class TimeRecord(commands.Cog):
             self.RECORD_ON,
             now
         )
+
+        # この処理の中で計測する意味はないので、別途分けたい
+        if status == self.TIME_RECORD_STATUS_OUT:
+            # 時間計算
+            start_voice_state_record = self.find_start_voice_state_record(member.id, voice_channel.id, result.id)
+            if start_voice_state_record is None or start_voice_state_record.status != self.TIME_RECORD_STATUS_IN:
+                logger.error(f"入室記録がありません。 ユーザー:{member.id} チャンネル:{voice_channel.id}")
+                return
+
+            start_day = start_voice_state_record.created_at.strftime("%d")
+            end_day = now.strftime("%d")
+            if start_day != end_day:
+                # 入室時と退出時に日付をまたいだ場合、time_recordは１日毎に記録したいので2レコード登録する
+                date_str = start_voice_state_record.created_at.strftime("%Y/%m/%d") + ' 23:59:59'
+                date_dt = datetime.strptime(date_str, '%Y/%m/%d %H:%M:%S')
+                total_time = date_dt - start_voice_state_record.created_at
+                self.save_time_record(member.id,
+                                      voice_channel.id,
+                                      start_voice_state_record.created_at.time(),
+                                      date_dt.time(),
+                                      start_voice_state_record.created_at,
+                                      total_time,
+                                      now)
+
+                date_str = now.strftime("%Y/%m/%d") + ' 00:00:00'
+                date_dt = datetime.strptime(date_str, '%Y/%m/%d %H:%M:%S')
+                total_time = result.created_at - date_dt
+                self.save_time_record(member.id,
+                                      voice_channel.id,
+                                      date_dt.time(),
+                                      now.time(),
+                                      now,
+                                      total_time,
+                                      now)
+
+            else:
+                total_time = result.created_at - start_voice_state_record.created_at
+                self.save_time_record(member.id,
+                                      voice_channel.id,
+                                      start_voice_state_record.created_at.time(),
+                                      now.time(),
+                                      now,
+                                      total_time,
+                                      now)
         return
 
     async def send_message(self, send_channel_id, channel_name, status, is_record, now):
@@ -217,8 +261,8 @@ class TimeRecord(commands.Cog):
     def save_time_record(self,
                          member_id,
                          channel_id,
-                         start_voice_state_record_id,
-                         end_voice_state_record_id,
+                         start_time,
+                         end_time,
                          date,
                          total_time,
                          now):
@@ -226,19 +270,23 @@ class TimeRecord(commands.Cog):
         入室時間 登録
         :param member_id:
         :param channel_id:
-        :param start_voice_state_record_id:
-        :param end_voice_state_record_id:
+        :param start_time:
+        :param end_time:
+        :param date:
         :param total_time:
         :param now:
         :return:
         """
         self.time_record_service.save(member_id,
                                       channel_id,
-                                      start_voice_state_record_id,
-                                      end_voice_state_record_id,
+                                      start_time,
+                                      end_time,
                                       date,
                                       total_time.seconds,
                                       now)
+
+    def find_start_voice_state_record(self, member_id, channel_id, end_voice_state_record_id):
+        return self.voice_state_record_service.find_start_voice_state_record(member_id, channel_id, end_voice_state_record_id)
 
     @property
     def config(self):

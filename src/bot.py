@@ -17,6 +17,7 @@ discord_voice_channel_entry_time_record BOT
 initial_extensions = (
     'cogs.time_record',
     'cogs.add_member',
+    'cogs.add_voice_channel'
 )
 
 

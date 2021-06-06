@@ -1,5 +1,6 @@
-from settings.setting import *
 from sqlalchemy import *
+
+from settings.setting import *
 
 
 class VoiceChannels(Base):

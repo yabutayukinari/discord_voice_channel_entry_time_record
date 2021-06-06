@@ -20,3 +20,12 @@ class VoiceChannelService:
         return session.query(VoiceChannels) \
             .filter(VoiceChannels.discord_id == discord_id) \
             .first()
+
+    def save(self, discord_id, is_record, created_at):
+        voice_channels = VoiceChannels()
+        voice_channels.discord_id = discord_id
+        voice_channels.is_record = is_record
+        voice_channels.created_at = created_at
+        session.add(voice_channels)
+        session.commit()
+        return voice_channels

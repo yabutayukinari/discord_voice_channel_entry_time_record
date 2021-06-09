@@ -10,6 +10,7 @@ from services.times_channel_service import *
 from services.voice_channel_service import *
 from services.voice_state_record_service import *
 from services.members_date_total_enter_seconds_service import *
+from services.members_week_total_enter_seconds_service import *
 
 TOKEN = config.token
 
@@ -25,6 +26,7 @@ class TimeRecord(commands.Cog):
         self.times_channel_service = TimesChannelService()
         self.time_record_service = TimeRecordService()
         self.members_date_total_enter_seconds_service = MembersDateTotalEnterSecondsService()
+        self.members_week_total_enter_seconds_service = MembersWeekTotalEnterSecondsService()
         self.TIME_RECORD_STATUS_IN = 1
         self.TIME_RECORD_STATUS_OUT = 2
         self.RECORD_ON = True
@@ -306,9 +308,22 @@ class TimeRecord(commands.Cog):
 
         embed = discord.Embed(title=f"学習時間", color=0x00FFFF)
 
-        embed.add_field(name="日付", value=now.date().strftime('%Y/%m/%d'), inline=False)
-        embed.add_field(name="学習時間", value=f"{h}:{m}:{s}", inline=False)
+        embed.add_field(name="期間", value=now.date().strftime('%Y/%m/%d'), inline=False)
+        embed.add_field(name="入室時間", value=f"{h}:{m}:{s}", inline=False)
 
+        await send_channel.send(embed=embed)
+
+    @commands.command()
+    async def get_week(self, ctx):
+        member = self.member_service.find_by_discord_id(ctx.author.id)
+        result = self.members_week_total_enter_seconds_service.find_latest(member.id)
+        times_channel_discord_id = self.find_times_channel_discord_id_by_member_id(member.id)
+        send_channel = self.bot.get_channel(times_channel_discord_id)
+        h, m, s = self.get_h_m_s(result[2])
+        embed = discord.Embed(title=f"入室時間", color=0x00FFFF)
+
+        embed.add_field(name="期間", value="今週", inline=False)
+        embed.add_field(name="入室時間", value=f"{h}:{m}:{s}", inline=False)
         await send_channel.send(embed=embed)
 
     @property
@@ -323,7 +338,7 @@ class TimeRecord(commands.Cog):
         td = timedelta(seconds=seconds)
         m, s = divmod(td.seconds, 60)
         h, m = divmod(m, 60)
-        return h, m, s
+        return str(h).zfill(2), str(m).zfill(2), str(s).zfill(2)
 
 
 def setup(bot):

@@ -17,9 +17,15 @@ host(getenv('IP_ADDRESS'))
     ->stage('staging')
     ->set('deploy_path', '/var/bot/type77_test');
 
+
+desc('file chmod');
+task('file:chmod', function () {
+    run('chmod 775 /var/bot/type77_test/current/src/launcher.py');
+});
+
 desc('service restart');
 task('service:restart', function () {
-    run('echo {{_xm3_pass}} | sudo -S  systemctl restart type77_test.service');
+    run('echo {{_xm3_pass}} | sudo -S systemctl restart type77_test.service');
 });
 
 desc('create venv');
@@ -51,6 +57,7 @@ task('deploy', [
     'deploy:symlink',
     'venv:create',
     'pip:install',
+    'file:chmod',
     'deploy:unlock',
     'service:restart',
     'cleanup',

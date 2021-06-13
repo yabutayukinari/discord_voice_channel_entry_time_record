@@ -1,3 +1,4 @@
+#!/var/bot/type77_test/current/venv/bin/python
 from bot import MyBot
 
 

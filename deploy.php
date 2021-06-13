@@ -5,7 +5,7 @@ namespace Deployer;
 require_once 'recipe/common.php';
 
 // Project repository
-set('repository', 'git@github.com:digmee/missing-message-fixer.git');
+set('repository', 'git@github.com:yabutayukinari/type77.git');
 
 host(getenv('IP_ADDRESS'))
     ->port(getenv('PORT_NO'))

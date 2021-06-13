@@ -16,11 +16,11 @@ host(getenv('IP_ADDRESS'))
     ->set('deploy_path', '/var/bot/type77_test');
 
 set('shared_dirs', []);
-set('shared_files', ['.env', 'src/services.php', 'mybot.sqlite3']);
+set('shared_files', ['src/config.py', 'mybot.sqlite3']);
 set('writable_dirs', []);
 set('writable_mode', 'chmod');
 set('writable_chmod_mode', '0777');
-set('writable_use_sudo', false);
+set('writable_use_sudo', true);
 
 desc('Deploy project');
 task('deploy', [

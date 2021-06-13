@@ -20,7 +20,7 @@ set('shared_files', ['.env', 'src/services.php', 'mybot.sqlite3']);
 set('writable_dirs', []);
 set('writable_mode', 'chmod');
 set('writable_chmod_mode', '0777');
-set('writable_use_sudo', true);
+set('writable_use_sudo', false);
 
 desc('Deploy project');
 task('deploy', [

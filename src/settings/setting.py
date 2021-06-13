@@ -6,7 +6,7 @@ from loguru import logger
 from sqlalchemy_views import CreateView
 
 # DB接続するためのEngineインスタンス
-engine = create_engine('sqlite:///mybot.sqlite3', echo=True)
+engine = create_engine('sqlite:////var/bot/type77_test/shared/mybot.sqlite3', echo=True)
 
 # DBに対してORM操作するときに利用
 # Sessionを通じて操作を行う

@@ -1,0 +1,37 @@
+name: test
+
+on:
+  push:
+
+jobs:
+  deploy-staging:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup SSH for staging
+        run: mkdir -p ~/.ssh && echo "${{secrets.SSH_KEY}}" > ~/.ssh/id_rsa && chmod 0600 ~/.ssh/id_rsa
+      - name: Setup Deployer
+        run: curl -LO https://deployer.org/deployer.phar && mv deployer.phar ./dep  && chmod +x ./dep
+      - name: deploy to staging
+        run: ./dep deploy staging -vvv
+        env:
+          IP_ADDRESS: ${{secrets.IP_ADDRESS}}
+          PORT_NO: ${{secrets.PORT_NO}}
+          USER_NAME: ${{secrets.USER_NAME}}
+  deploy-production:
+    if: github.ref == 'refs/heads/release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup SSH for production
+        run: mkdir -p ~/.ssh && echo "${{secrets.SSH_KEY}}" > ~/.ssh/id_rsa_prod && chmod 0600 ~/.ssh/id_rsa_prod
+      - name: Setup Deployer
+        run: curl -LO https://deployer.org/deployer.phar && mv deployer.phar ./dep  && chmod +x ./dep
+      - name: deploy to prod
+        run: ./dep deploy prod -vvv
+        env:
+          IP_ADDRESS: ${{secrets.IP_ADDRESS}}
+          PORT_NO: ${{secrets.PORT_NO}}
+          USER_NAME: ${{secrets.USER_NAME}}
+

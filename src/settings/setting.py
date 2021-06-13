@@ -44,7 +44,7 @@ if not insp.has_table("members_week_total_enter_seconds"):
         "SELECT "
         "member_id, "
         "strftime('%Y-%W weeks', date) as week, "
-        "sum(second) as total_second "
+        "sum(total_second) as total_second "
         "FROM members_date_total_enter_seconds "
         "GROUP BY member_id, week"
     )

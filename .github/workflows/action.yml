@@ -5,7 +5,7 @@ on:
 
 jobs:
   deploy-staging:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,7 +21,7 @@ jobs:
           USER_NAME: ${{secrets.USER_NAME}}
           XM3_PASS: ${{secrets.XM3_PASS}}
   deploy-production:
-    if: github.ref == 'refs/heads/release'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -35,4 +35,5 @@ jobs:
           IP_ADDRESS: ${{secrets.IP_ADDRESS}}
           PORT_NO: ${{secrets.PORT_NO}}
           USER_NAME: ${{secrets.USER_NAME}}
+          XM3_PASS: ${{secrets.XM3_PASS}}
 

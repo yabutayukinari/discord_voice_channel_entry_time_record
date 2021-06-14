@@ -9,6 +9,7 @@ set('repository', 'git@github.com:yabutayukinari/type77.git');
 
 set('_xm3_pass', getenv('XM3_PASS'));
 
+// staging
 host(getenv('IP_ADDRESS'))
     ->port(getenv('PORT_NO'))
     ->user(getenv('USER_NAME'))
@@ -16,6 +17,15 @@ host(getenv('IP_ADDRESS'))
     ->addSshOption('StrictHostKeyChecking', 'no')
     ->stage('staging')
     ->set('deploy_path', '/var/bot/type77_test');
+
+// release
+host(getenv('IP_ADDRESS'))
+    ->port(getenv('PORT_NO'))
+    ->user(getenv('USER_NAME'))
+    ->identityFile('~/.ssh/id_rsa')
+    ->addSshOption('StrictHostKeyChecking', 'no')
+    ->stage('release')
+    ->set('deploy_path', '/var/bot/type77');
 
 
 desc('file chmod');

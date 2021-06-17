@@ -58,6 +58,7 @@ set('writable_dirs', []);
 set('writable_mode', 'chmod');
 set('writable_chmod_mode', '0777');
 set('writable_use_sudo', true);
+set('cleanup_use_sudo', true);
 
 desc('Deploy staging project');
 task('deploy_staging', [

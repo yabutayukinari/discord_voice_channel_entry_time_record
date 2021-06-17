@@ -7,8 +7,6 @@ require_once 'recipe/common.php';
 // Project repository
 set('repository', 'git@github.com:yabutayukinari/type77.git');
 
-set('_xm3_pass', getenv('XM3_PASS'));
-
 // staging
 host('staging')
     ->hostname(getenv('IP_ADDRESS'))
@@ -39,7 +37,7 @@ task('file:chmod_staging', function () {
 
 desc('service restart staging');
 task('service:restart_staging', function () {
-    run('echo {{_xm3_pass}} | sudo -S systemctl restart type77_test.service');
+    run('sudo systemctl restart type77_test.service');
 });
 
 desc('create venv staging');
@@ -86,7 +84,7 @@ task('file:chmod_release', function () {
 
 desc('service restart release');
 task('service:restart_release', function () {
-    run('echo {{_xm3_pass}} | sudo -S systemctl restart type77.service');
+    run('sudo systemctl restart type77.service');
 });
 
 desc('create venv release');

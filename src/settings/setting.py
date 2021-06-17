@@ -4,9 +4,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from loguru import logger
 
 from sqlalchemy_views import CreateView
+import config
 
 # DB接続するためのEngineインスタンス
-engine = create_engine('sqlite:////var/bot/type77_test/shared/mybot.sqlite3', echo=True)
+engine = create_engine(config.database_host, echo=True)
 
 # DBに対してORM操作するときに利用
 # Sessionを通じて操作を行う
@@ -20,7 +21,7 @@ Base = declarative_base()
 
 # ログ
 logger.remove()
-logger.add("logs/log_{time:YYYY-MM-DDTHH:mm}.log", rotation="1 day", retention=30, compression="zip")
+logger.add(config.log, rotation="1 day", retention=30, compression="zip")
 
 # View追加 TODO: View作成は別ファイルに分離したい。
 insp = inspect(engine)

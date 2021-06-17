@@ -10,41 +10,45 @@ set('repository', 'git@github.com:yabutayukinari/type77.git');
 set('_xm3_pass', getenv('XM3_PASS'));
 
 // staging
-host(getenv('IP_ADDRESS'))
+host('staging')
+    ->hostname(getenv('IP_ADDRESS'))
     ->port(getenv('PORT_NO'))
     ->user(getenv('USER_NAME'))
     ->identityFile('~/.ssh/id_rsa')
     ->addSshOption('StrictHostKeyChecking', 'no')
     ->stage('staging')
+    ->set('branch', 'develop')
     ->set('deploy_path', '/var/bot/type77_test');
 
+
 // release
-host(getenv('IP_ADDRESS'))
+host('release')
+    ->hostname(getenv('IP_ADDRESS'))
     ->port(getenv('PORT_NO'))
     ->user(getenv('USER_NAME'))
     ->identityFile('~/.ssh/id_rsa')
     ->addSshOption('StrictHostKeyChecking', 'no')
     ->stage('release')
+    ->set('branch', 'main')
     ->set('deploy_path', '/var/bot/type77');
 
-
-desc('file chmod');
-task('file:chmod', function () {
+desc('file chmod staging');
+task('file:chmod_staging', function () {
     run('chmod 775 /var/bot/type77_test/current/src/launcher.py');
 });
 
-desc('service restart');
-task('service:restart', function () {
+desc('service restart staging');
+task('service:restart_staging', function () {
     run('echo {{_xm3_pass}} | sudo -S systemctl restart type77_test.service');
 });
 
-desc('create venv');
-task('venv:create', function () {
+desc('create venv staging');
+task('venv:create_staging', function () {
     run('cd /var/bot/type77_test/current && python3 -m venv venv');
 });
 
-desc('pip install');
-task('pip:install', function () {
+desc('pip install staging');
+task('pip:install_staging', function () {
     run('cd /var/bot/type77_test/current && . venv/bin/activate && pip install -U -r requirements.txt');
 });
 
@@ -55,8 +59,8 @@ set('writable_mode', 'chmod');
 set('writable_chmod_mode', '0777');
 set('writable_use_sudo', true);
 
-desc('Deploy project');
-task('deploy', [
+desc('Deploy staging project');
+task('deploy_staging', [
     'deploy:info',
     'deploy:prepare',
     'deploy:lock',
@@ -65,13 +69,55 @@ task('deploy', [
     'deploy:shared',
     'deploy:writable',
     'deploy:symlink',
-    'venv:create',
-    'pip:install',
-    'file:chmod',
+    'venv:create_staging',
+    'pip:install_staging',
+    'file:chmod_staging',
     'deploy:unlock',
-    'service:restart',
+    'service:restart_staging',
     'cleanup',
 ]);
 
-after('deploy', 'success');
+//
+desc('file chmod release');
+task('file:chmod_release', function () {
+    run('chmod 775 /var/bot/type77/current/src/launcher.py');
+});
+
+desc('service restart release');
+task('service:restart_release', function () {
+    run('echo {{_xm3_pass}} | sudo -S systemctl restart type77.service');
+});
+
+desc('create venv release');
+task('venv:create_release', function () {
+    run('cd /var/bot/type77/current && python3 -m venv venv');
+});
+
+desc('pip install release');
+task('pip:install_release', function () {
+    run('cd /var/bot/type77/current && . venv/bin/activate && pip install -U -r requirements.txt');
+});
+
+desc('Deploy release project');
+task('deploy_release', [
+    'deploy:info',
+    'deploy:prepare',
+    'deploy:lock',
+    'deploy:release',
+    'deploy:update_code',
+    'deploy:shared',
+    'deploy:writable',
+    'deploy:symlink',
+    'venv:create_release',
+    'pip:install_release',
+    'file:chmod_release',
+    'deploy:unlock',
+    'service:restart_release',
+    'cleanup',
+]);
+
+after('deploy_staging', 'success');
+after('deploy_release', 'success');
 after('deploy:failed', 'deploy:unlock');
+
+

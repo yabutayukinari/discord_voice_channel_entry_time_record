@@ -14,7 +14,7 @@ jobs:
       - name: Setup Deployer
         run: curl -LO https://deployer.org/deployer.phar && mv deployer.phar ./dep  && chmod +x ./dep
       - name: deploy to staging
-        run: echo ${{secrets.XM3_PASS}} | sudo -S ./dep deploy_staging staging -vvv
+        run: ./dep deploy_staging staging -vvv
         env:
           IP_ADDRESS: ${{secrets.IP_ADDRESS}}
           PORT_NO: ${{secrets.PORT_NO}}
@@ -30,7 +30,7 @@ jobs:
       - name: Setup Deployer
         run: curl -LO https://deployer.org/deployer.phar && mv deployer.phar ./dep  && chmod +x ./dep
       - name: deploy to prod
-        run: echo ${{secrets.XM3_PASS}} | sudo -S ./dep deploy_release release -vvv
+        run: ./dep deploy_release release -vvv
         env:
           IP_ADDRESS: ${{secrets.IP_ADDRESS}}
           PORT_NO: ${{secrets.PORT_NO}}
